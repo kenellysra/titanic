@@ -72,32 +72,34 @@ boxplot(results)
 #Model considering gender as independent variable
 gendermodel <- titanicdf[,c("Sex", "Survived")]
 gendermodel$Survived <- factor(gendermodel$Survived, levels = c(0, 1), labels = c("No", "Yes"))
-
+dim(titanicdf)[1]
 index <- sample(1:length(gendermodel$Survived), length(gendermodel$Survived)*.75, replace = FALSE)
 trainingdata <-gendermodel[index,]
 testingdata <-gendermodel[-index,]
-dim(gendermodel)[1]
 
-table(trainingdata$Survived, trainigdata$Sex)
+
+table(trainingdata$Survived, trainingdata$Sex)
 
 predictsurvival <- function(data){
-    model <- rep("No", length(data))
+    model <- rep("No", dim(data)[1])
     model[data$Sex == 'female'] <- "Yes"
-    model[data$Sex == 'male'] <- "No"
+#   model[data$Sex == 'male'] <- "No"
     return(model)
 }
-
+model
 women <- c()
 
 for (i in 1:1000) {
     index <- sample(1:length(gendermodel), length(gendermodel)*.75, replace = FALSE)
     testing <- gendermodel[-index,]
     womenmodel <- predictsurvival(testing)
-    women[i] <- 1 - mean(womenmodel !=testingdata$Survived)
+    women[i] <- 1 - mean(womenmodel != testingdata$Survived)
     
 }
-
-women
+str(gendermodel)
+dim(gendermodel)
+womenmodel
+summary(women)
 results$WomenAccurancy <- women
 names(results)<- c("Coin", "All Perish", "Women")
 boxplot(results)
