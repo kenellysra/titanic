@@ -86,7 +86,7 @@ predictsurvival <- function(data){
 #   model[data$Sex == 'male'] <- "No"
     return(model)
 }
-model
+
 women <- c()
 
 for (i in 1:1000) {
@@ -103,3 +103,25 @@ summary(women)
 results$WomenAccurancy <- women
 names(results)<- c("Coin", "All Perish", "Women")
 boxplot(results)
+
+#Performance Measures
+
+library(gmodels)
+CrossTable(testing$Survived, womenmodel)
+
+library(caret)
+library(e1071)
+confusionMatrix(as.factor(womenmodel), testing$Survived, positive = "Yes")
+
+library(ModelMetrics)
+auc(testing$Survived, as.factor(womenmodel))
+
+library(ROCR)
+predwomenmodel <- prediction(as.numeric(womenmodel), as.numeric(testing$Survived))
+perfwomenmodel <- performance(predwomenmodel, measure = "tpr", x.measure = "fpr")
+plot(perfwomenmodel)
+
+#AUROC
+auc <- performance(predwomenmodel, measure = "auc")
+auc <- auc@y.values[[1]]
+auc
